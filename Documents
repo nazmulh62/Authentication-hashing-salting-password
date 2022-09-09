@@ -1,0 +1,12 @@
+// Authentication & Security
+// Level of Security and Authentication
+
+Register->email, Password->database
+Signin->email, Password->match in database->if yes, then user has access to the Website.
+
+
+
+
+Project Installation:
+====================
+npm install express nodemon dotenv cors mongoose
