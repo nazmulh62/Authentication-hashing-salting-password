@@ -1,34 +1,43 @@
-Hashing password:
-=================
+Lesson 4:
+======== 
+https://www.npmjs.com/package/bcrypt
 
->> no cncryption key; we will use hashing algorithm
+Hashing + salting password
+we can hash the password with some random number(salting)
 
->> hackers can not convert to plain text as no encryption key is available
-
->> md5 package: https://www.npmjs.com/package/md5
-
->> install md5 npm package: npm install md5
+install bcrypt npm package npm install bcrypt
 
 usage
-=====
 
-var md5 = require("md5");
-console.log(md5("message"));
-// 78e731027d8fd50ed642340b7c9a63b3
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
-// hash password when create it
-const newUser = new User({
-  email: req.body.username,
-  password: md5(req.body.password),
+app.post("/register", async (req, res) => {
+  try {
+    bcrypt.hash(req.body.password, saltRounds, async function (err, hash) {
+      const newUser = new User({
+        email: req.body.email,
+        password: hash,
+      });
+      await newUser.save();
+      res.status(201).json(newUser);
+    });
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
 });
 
 app.post("/login", async (req, res) => {
   try {
     const email = req.body.email;
-    const password = md5(req.body.password);
+    const password = req.body.password;
     const user = await User.findOne({ email: email });
-    if (user && user.password === password) {
-      res.status(200).json({ status: "valid user" });
+    if (user) {
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result === true) {
+          res.status(200).json({ status: "valid user" });
+        }
+      });
     } else {
       res.status(404).json({ status: "Not valid user" });
     }
@@ -36,4 +45,3 @@ app.post("/login", async (req, res) => {
     res.status(500).json(error.message);
   }
 });
-

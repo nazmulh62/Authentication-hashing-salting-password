@@ -1,4 +1,6 @@
-Mongoose Database Password encryption:
-======================================
 
-https://www.npmjs.com/package/mongoose-encryption
+Hashing & salting password
+==========================
+https://www.npmjs.com/package/bcrypt
+
+
